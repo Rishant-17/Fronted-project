@@ -1,111 +1,91 @@
-import { useState, useEffect } from "react";
-import { MdCheck,MdDeleteForever } from "react-icons/md";
+//importing the different files
+import { useState } from "react";
 import "./Todo.css";
-
-export  const Todo = () => {
-    const [inputValue, setInputValue] = useState("");
-    const [tasks, setTasks] = useState ([]);
-    const [dateTime, setDateTime] = useState("");
-
+import { TodoForm } from "./TodoForm";
+import { TodoList } from "./TodoList";
+import { TodoDate } from "./TodoDate";
+import { setLocalStorageTodoData, getLocalStorageTodoData} from "./TodoLocalStorage";
 
 
 
-    const handleInputChange  = (value) => {
-        setInputValue(value);
-    };
-
-    const handleFormSubmit = (event) => {
-        event.preventDefault();
-
-        if(!inputValue) return;
 
 
-        if(tasks.includes(inputValue)) {
-              setInputValue("");
-           return;
-        } 
+export const Todo = () => {
+  const [tasks, setTasks] = useState(() => getLocalStorageTodoData());
 
-        setTasks ((prevTask) => [...prevTask, inputValue]);
-        setInputValue("");
-    };
+ 
 
+  const handleFormSubmit = ({ id, content, checked }) => {
+    if (!content.trim()) return;
 
-    //todo date and time
-   useEffect(() => {
-    const interval = setInterval(() => {
-    const now = new Date();
-    const formatedDate = now.toLocaleDateString();
-    const formatedTime = now.toLocaleTimeString();
-    setDateTime( `${formatedDate} - ${formatedTime}`);
-    }, 1000);
-  
-    return () => clearInterval (interval);
-}, []);
+    const isDuplicate = tasks.find(
+      (task) => task.content === content
+    );
+    if (isDuplicate) return;
 
+    setTasks((prev) => [...prev, { id, content, checked }]);
+  };
 
-//todo delete function
+  // Update local storage whenever tasks change
+  setLocalStorageTodoData(tasks);
 
-const handleDeleteTodo = (value) => {
-    console.log("Delete button clicked");
-    console.log(value);
-    const updatedTask = tasks.filter((curTask) => curTask !== value);
-    setTasks(updatedTask);
-};
+  //function to delete a todo item
+  const handleDeleteTodo = (id) => {
+    setTasks((prev) => prev.filter((task) => task.id !== id));
+  };
 
-//todo clear all function
-const handleTodoData = () => {
+//function to check a todo item
+
+  const handleCheckedTodo = (id) => {
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === id
+          ? { ...task, checked: !task.checked }
+          : task
+      )
+    );
+  };
+
+  //function to clear all todo items
+  const handleTodoData = () => {
     setTasks([]);
+  };
 
+
+
+
+
+//main return function
+
+  return (
+    <section className="todo-container">
+      <header>
+        <h1>Todo List</h1>
+        <TodoDate />
+      </header>
+
+      <TodoForm onAddTodo={handleFormSubmit} />
+
+      <section className="myUnOrdList">
+        <ul>
+          {tasks.map((task) => (
+            <TodoList
+              key={task.id}
+              id={task.id}
+              data={task.content}
+              checked={task.checked}
+              onHandleDeleteTodo={handleDeleteTodo}
+              onHandleCheckedTodo={handleCheckedTodo}
+            />
+          ))}
+        </ul>
+      </section>
+
+      <section>
+        <button className="clear-btn" onClick={handleTodoData}>
+          Clear All
+        </button>
+      </section>
+    </section>
+  );
 };
-
-
-    return (
-         <section className="todo-container">
-         <header>
-            <h1>Todo List</h1>
-            <h2 className="date-time">
-            {dateTime}</h2>
-         </header>
-            <section className="form">
-                <form onSubmit={handleFormSubmit}>
-                    <div>
-                        <input 
-                        type="text" 
-                        className="todo-input" 
-                        autoComplete="off"
-                          value={inputValue} 
-                          onChange={(event)=>setInputValue(event.target.value)}
-                             />
-                    </div>
-                    <div>
-                        <button type="submit" className="todo-btn">
-                            Add Task
-                        </button>
-                    </div>
-                </form>
-            </section>
-            <section className="myUnOrdList">
-                <ul>
-                    {tasks.map((curTask, index) => {
-                      return <li key={index} className="todo-item">
-                      <span>{curTask}</span>
-                      <button className="check-btn"><MdCheck /></button>
-                      <button className="delete-btn" onClick={() => handleDeleteTodo(curTask)}><MdDeleteForever /></button>
-                      </li>;
-                    })}
-                </ul>
-
-            </section>
-
-          <section> 
-          <button className="clear-btn" onClick={handleTodoData}>Clear All</button>
-          </section>
-
-         </section>
-
-
-
-
-
-    )
-}
