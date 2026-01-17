@@ -1,9 +1,9 @@
 
-import { Todo } from "./project/Todo/Todo";
+import {Counter} from "../src/project/counter/Counter"
 export const App = () => {
   return (
     <section>
-     {<Todo/>}
+     {<Counter/>}
     </section>
   );
 };

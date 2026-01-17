@@ -5,11 +5,12 @@ import './CounterStyle.css';
 export const Counter = () => {
 
   
+   const [Count, setCount] = useState(0);
+
     const reset = () => {
       setCount(0);
     }
 
-   const [Count, setCount] = useState(0);
     return ( 
 
     <div className="counter"> 
