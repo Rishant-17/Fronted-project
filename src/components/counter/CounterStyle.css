@@ -1,0 +1,53 @@
+/* Make body full height and center everything */
+body {
+    height: 100vh; /* full viewport height */
+    margin: 0;
+    display: flex;
+    justify-content: center; /* horizontal center */
+    align-items: center;     /* vertical center */
+    background-color: antiquewhite;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        'Helvetica Neue', Arial, 'Noto Sans', sans-serif, sans-serif;
+}
+
+/* Counter container */
+.counter {
+    text-align: center;
+    color: goldenrod;
+    margin-top: 10px;
+}
+.title{
+    /*increase the size of text*/
+    font-size: 40px;
+    color:#525e75;
+}
+
+/* Buttons styling */
+button {
+    margin: 5px;
+    padding: 15px 32px;
+    font-size: 16px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.Increment {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.Decrement {
+    background-color: #f44336;
+    color: white;
+}
+
+.reset {
+    background-color: #06394a;
+    color: white;
+}
+
+/* Optional: add hover effect */
+button:hover {
+    opacity: 0.8;
+}
